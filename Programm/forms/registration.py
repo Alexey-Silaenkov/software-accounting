@@ -6,7 +6,7 @@ from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 def show():
 
     OUTPUT_PATH = Path(__file__).parent
-    ASSETS_PATH = OUTPUT_PATH / Path(r"forms/assets/registration")
+    ASSETS_PATH = OUTPUT_PATH / Path(r"assets/registration")
 
 
     def relative_to_assets(path: str) -> Path:

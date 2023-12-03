@@ -72,4 +72,4 @@ class Send_email:
         return html
 
 a = Send_email()
-a.send("ychet.po", "swfi ciqc lani rhvm" ,"silaenckov2014@yandex.ru", a.errorHtml("Иванов Иван Иванович", "Ошибка возникла при создании заявки"))
+a.send("ychet.po", "swfi ciqc lani rhvm" ,"silaenckov2014@yandex.ru", a.kluchHtml("GTF7-JDHA-0956-KSI7"))

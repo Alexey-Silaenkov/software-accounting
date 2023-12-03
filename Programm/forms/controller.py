@@ -7,4 +7,4 @@ from registration import show as sh
     
 
         
-show()
+sh()

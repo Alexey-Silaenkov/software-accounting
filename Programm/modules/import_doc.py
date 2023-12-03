@@ -14,7 +14,7 @@ class ImportDoc:
     # добавление параграфов в документ
     def importDoc(self, user: str, po: str, kluch: str):
         # добавляем параграф
-        self.doc.add_paragraph(f'Пользователь: {user} \t ПО: {po} \t Ключ: {kluch[:-5]}')
+        self.doc.add_paragraph(f'Пользователь: {user} \t ПО: {po} \t Ключ: {kluch[:-10]}...')
 
         
     # Сохранение документа
@@ -24,12 +24,9 @@ class ImportDoc:
 
 
 # a = ImportDoc()
-# a.importDoc("Иванов Иван Иванович","Adobe V3","GHBR-UAB6-LSUF-87SD")
-# a.importDoc("Иванов Иван Иванович","Adobe V3","GHBR-UAB6-LSUF-87SD")
-# a.importDoc("Иванов Иван Иванович","Adobe V3","GHBR-UAB6-LSUF-87SD")
-# a.importDoc("Иванов Иван Иванович","Adobe V3","GHBR-UAB6-LSUF-87SD")
-# a.importDoc("Иванов Иван Иванович","Adobe V3","GHBR-UAB6-LSUF-87SD")
-# a.importDoc("Иванов Иван Иванович","Adobe V3","GHBR-UAB6-LSUF-87SD")
-# a.importDoc("Иванов Иван Иванович","Adobe V3","GHBR-UAB6-LSUF-87SD")
-# a.importDoc("Иванов Иван Иванович","Adobe V3","GHBR-UAB6-LSUF-87SD")
+# a.importDoc("Иванов Иван Иванович","Adobe","GHBR-UAB6-LSUF-87SD")
+# a.importDoc("Баранов Антан Игоревич","Adobe","LVUV-PCJE-LSUF-87SD")
+# a.importDoc("Голоухов Руслан Игоревич","Photoshop 2021","QUYS-NNMV-LSUF-87SD")
+# a.importDoc("Бутусов Александр Григорьевич","Pycharm","GHBR-UAB6-LSUF-87SD")
+
 # a.saveDoc()

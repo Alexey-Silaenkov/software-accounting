@@ -40,8 +40,8 @@ class Crypt:
             else:
                 raise ValueError(value_error)
 
-a = Crypt()
-l = a.encrypt("helloayw456gftgH")
-print(l)
-b = Crypt()
-print(b.decrypt(l))
+# a = Crypt()
+# l = a.encrypt("helloayw456gftgH")
+# print(l)
+# b = Crypt()
+# print(b.decrypt(l))

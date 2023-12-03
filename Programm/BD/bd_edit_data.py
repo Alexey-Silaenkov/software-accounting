@@ -1,4 +1,5 @@
 from all_updates import Update_bd
+from shifr import Crypt
 
 class Bd_edit:
 
