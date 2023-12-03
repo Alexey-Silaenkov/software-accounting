@@ -30,7 +30,7 @@ class Send_email:
         mail.quit()
 
     # Создание HTML для отправки кода лицензионного ключа
-    def kluchHtml(self, kluch):
+    def kluchHtml(self, kluch: str):
         html = f"""
         <html><body><br><img src=\"https://storage.googleapis.com/thl-blog-production/2017/10/a5d6fc4b-banneri-320x110.jpg\" alt=\"ACORP\"> 
         <br><br>Здравствуйте!
@@ -44,7 +44,7 @@ class Send_email:
         return html
 
     # Создание HTML для отправки кода подтверждения возврата пароля
-    def codPasseordHtml(self, kod):
+    def codPasseordHtml(self, kod: str):
         html = f"""
         <html><body><br><img src=\"https://storage.googleapis.com/thl-blog-production/2017/10/a5d6fc4b-banneri-320x110.jpg\" alt=\"ACORP\"> 
         <br><br>Здравствуйте!
@@ -56,6 +56,20 @@ class Send_email:
         <br>Мы рады, что вы выбрали именно наш программный продукт и желаем Вам приятого пользования!</body></html>
         """
         return html
+    
+        # Создание HTML для отправки кода подтверждения возврата пароля
+    
+    # Создание HTML для отправки сообщения об ошибке
+    def errorHtml(self, user: str, error_value: str):
+        html = f"""
+        <html><body><br><img src=\"https://storage.googleapis.com/thl-blog-production/2017/10/a5d6fc4b-banneri-320x110.jpg\" alt=\"ACORP\"> 
+        <br><br>Здравствуйте!
+        <br>Пользователь {user} прислал сообщение об ошибке:
+        <br>                                                                                              
+        <p style="border:2px solid #555; border-radius:5px; width: 200px; text-align:center;  margin:20px; padding:20px;" > {error_value} </p>  
+        <br>
+        """
+        return html
 
-# a = Send_email()
-# a.send("ychet.po", "swfi ciqc lani rhvm" ,"silaenckov2014@yandex.ru", a.kluchHtml("GHBR-UAB6-LSUF-87SD"))
+a = Send_email()
+a.send("ychet.po", "swfi ciqc lani rhvm" ,"silaenckov2014@yandex.ru", a.errorHtml("Иванов Иван Иванович", "Ошибка возникла при создании заявки"))

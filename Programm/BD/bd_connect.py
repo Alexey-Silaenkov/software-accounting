@@ -3,6 +3,7 @@ Connects to a SQL database using pyodbc
 """
 
 import pyodbc
+
 class BdConnect:
     conn = ""
     # Подключение к базе черездрайвер ODBC
