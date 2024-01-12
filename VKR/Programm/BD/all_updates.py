@@ -1,4 +1,5 @@
 from .bd_connect import BdConnect
+import pyodbc
 
 
 class Update_bd:
@@ -10,9 +11,10 @@ class Update_bd:
         connect.connect()
 
         dbCursor = connect.conn.cursor()
-
-        dbCursor.execute(requestString)
-
+        try:
+            dbCursor.execute(requestString)
+        except pyodbc.Error as e:
+            return e
         connect.conn.commit()
         connect.disconnect()
         

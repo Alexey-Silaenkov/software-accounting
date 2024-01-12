@@ -1,6 +1,7 @@
 from .bd_connect import BdConnect
 from .shifr import Crypt
 
+
 class Bd_get_data:
 
     crypt = Crypt()
@@ -63,4 +64,42 @@ class Bd_get_data:
         #     return  True
 
 
+    def get_polz_view(self):
+
+        requestString = f'''
+        SELECT *
+        FROM [Ychpo].[dbo].[polzv]
+       
+        '''
+        
+        connect = BdConnect()
+        connect.connect()
+
+        dbCursor = connect.conn.cursor()
+
+        dbCursor.execute(requestString)
+        result_set = dbCursor.fetchall()
+
+        connect.conn.commit()
+        connect.disconnect()
+
+        crypt = Crypt()
+        result_users = []
+        result_user = []
+        
+        for item in result_set:
+            for k in item:
+                try:
+                    result_user.append(crypt.decrypt(k))
+                except:
+                    result_user.append(k)
+            result_users.append(result_user)
+            result_user = []
+
+        # print(result_users)
+        
+                    
+
+        return result_users
+        # return(int(str(result_set[0]).replace("(",'').replace(")",'').replace(",",'')))
 

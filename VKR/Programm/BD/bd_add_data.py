@@ -28,6 +28,10 @@ class Bd_add:
 
 
     def add_polz(self, F_P: str, I_P: str, O_P: str, email: str, login: str, password: str):
+        
+        if not (F_P and I_P and O_P and email and login and password):
+            return "Поля не могут быть пустыми!"  
+
         ''' Добавление данных о пользователе'''
 
         F_P = self.crypt.encrypt(F_P)
@@ -49,7 +53,7 @@ class Bd_add:
         @dostup = 1
         '''
         update_bd = Update_bd()
-        update_bd.all_edit_func(requestString)
+        return update_bd.all_edit_func(requestString)
 
 
     def add_kluch(self, kod: str, statuskluch: bool, pol_id: int):
