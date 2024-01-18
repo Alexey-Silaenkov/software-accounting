@@ -15,7 +15,7 @@ import tkinter.messagebox as mb
 import os
 import secrets
 import string
-from allwidjets import Form_utorization, Form_main
+from allwidjets import *
 
 
 
@@ -151,10 +151,22 @@ class Ui_Form_utorization(object):
             mb.showerror("Ошибка", "Неправильный пароль")
             return
 
-        global Form_utorization, Form_main
+        
+
+
+        global Form_utorization, Form_main, my_login
                 
+        my_login = login
+
         Form_utorization.hide()
+
+        get_data = Bd_get_data()
+        role = get_data.get_role(login)
+        dostup = get_data.get_dostup(login)
+        
+        ui_main.set_name(login, role, dostup)
         Form_main.show()
+
         
     def forgot_password(self):
 
