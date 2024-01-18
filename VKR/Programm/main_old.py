@@ -9,8 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from BD import *
-from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView, QAbstractItemView
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -122,11 +121,11 @@ class Ui_MainWindow(object):
         self.edit_zayavka_button.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.edit_zayavka_button.setStyleSheet("background-color: rgb(181, 206, 245);")
         self.edit_zayavka_button.setObjectName("edit_zayavka_button")
-        self.all_pages.addTab(self.zayavki_view, "")
+        self.all_pages.addTab(self.zayavki_view, "Заявки")
         self.users_view = QtWidgets.QWidget()
         self.users_view.setObjectName("users_view")
         self.users_group = QtWidgets.QGroupBox(self.users_view)
-        self.users_group.setGeometry(QtCore.QRect(10, 340, 1371, 461))
+        self.users_group.setGeometry(QtCore.QRect(10, 380, 1371, 461))
         self.users_group.setTitle("")
         self.users_group.setObjectName("users_group")
         self.F_U_users_label = QtWidgets.QLabel(self.users_group)
@@ -246,16 +245,11 @@ class Ui_MainWindow(object):
         self.login_users_input.raise_()
         self.password_users_input.raise_()
         self.password_users_label.raise_()
-        self.tableWidget = QtWidgets.QTableWidget(self.users_view)
-        self.tableWidget.setGeometry(QtCore.QRect(0, 0, 1381, 331))
-        self.tableWidget.setObjectName("tableWidget")
-        self.tableWidget.setColumnCount(0)
-        self.tableWidget.setRowCount(0)
         self.all_pages.addTab(self.users_view, "")
         self.po_view = QtWidgets.QWidget()
         self.po_view.setObjectName("po_view")
         self.PO_group = QtWidgets.QGroupBox(self.po_view)
-        self.PO_group.setGeometry(QtCore.QRect(10, 370, 1361, 431))
+        self.PO_group.setGeometry(QtCore.QRect(10, 410, 1361, 431))
         self.PO_group.setTitle("")
         self.PO_group.setObjectName("PO_group")
         self.name_po_po_label = QtWidgets.QLabel(self.PO_group)
@@ -375,111 +369,19 @@ class Ui_MainWindow(object):
         font.setPointSize(20)
         self.user_login_info.setFont(font)
         self.user_login_info.setObjectName("user_login_info")
-        MainWindow.setCentralWidget(self.centralwidget)
-
-        self.retranslateUi(MainWindow)
-        self.all_pages.setCurrentIndex(1)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-        self.fill_data_users()
-
-
-
-
-
-
-
-    def fill_data_users(self):
         
-        self.tableWidget.setColumnCount(7)
-        self.tableWidget.setHorizontalHeaderLabels(["Номер пользователя", "Фамилия", "Имя", "Очество", "Email", "Логин", "Пароль"])
+
         
-        self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tableWidget.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.tableWidget.itemSelectionChanged.connect(self.func1)
-
-        bd_get = Bd_get_data()
-        polz = bd_get.get_polz_view()
-        for p in polz:
-            rows = self.tableWidget.rowCount()
-            self.tableWidget.setRowCount(rows + 1)
-            self.tableWidget.setItem(rows, 0, QTableWidgetItem(str(p[0])))
-            self.tableWidget.setItem(rows, 1, QTableWidgetItem(p[1]))
-            self.tableWidget.setItem(rows, 2, QTableWidgetItem(p[2]))
-            self.tableWidget.setItem(rows, 3, QTableWidgetItem(p[3]))
-            self.tableWidget.setItem(rows, 4, QTableWidgetItem(p[4]))
-            self.tableWidget.setItem(rows, 5, QTableWidgetItem(p[5]))
-            self.tableWidget.setItem(rows, 6, QTableWidgetItem(p[6]))
-
-            rows = self.tableWidget.rowCount()
-            self.tableWidget.setRowCount(rows + 1)
-            self.tableWidget.setItem(rows, 0, QTableWidgetItem(str(p[0])))
-            self.tableWidget.setItem(rows, 1, QTableWidgetItem(p[1]))
-            self.tableWidget.setItem(rows, 2, QTableWidgetItem(p[2]))
-            self.tableWidget.setItem(rows, 3, QTableWidgetItem(p[3]))
-            self.tableWidget.setItem(rows, 4, QTableWidgetItem(p[4]))
-            self.tableWidget.setItem(rows, 5, QTableWidgetItem(p[5]))
-            self.tableWidget.setItem(rows, 6, QTableWidgetItem(p[6]))
-
-      
-        self.tableWidget.resizeColumnsToContents()
-
-    def func1 (self):
-        all_data = self.tableWidget.selectedItems()
-        print (all_data[0].text())
-        print (all_data[1].text())
-        print (all_data[2].text())
-        print (all_data[3].text())
-        print (all_data[4].text())
-        print (all_data[5].text())
-        print (all_data[6].text())
-         
+        self.all_pages.setCurrentIndex(0)
+        
 
 
-
-
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.number_zayavka_label.setText(_translate("MainWindow", "Номер заявки"))
-        self.status_zayavka_label.setText(_translate("MainWindow", "Статус"))
-        self.name_po_zayavka_label.setText(_translate("MainWindow", "Название ПО"))
-        self.version_po_zayavka_label.setText(_translate("MainWindow", "Версия ПО"))
-        self.login_zayavka_label.setText(_translate("MainWindow", "Логин"))
-        self.delete_zayavka_button.setText(_translate("MainWindow", "Удалить"))
-        self.add_zayavka_button.setText(_translate("MainWindow", "Добавить"))
-        self.edit_zayavka_button.setText(_translate("MainWindow", "Изменить"))
-        self.all_pages.setTabText(self.all_pages.indexOf(self.zayavki_view), _translate("MainWindow", "Заявки"))
-        self.F_U_users_label.setText(_translate("MainWindow", "Фамилия"))
-        self.I_U_users_label.setText(_translate("MainWindow", "Имя"))
-        self.O_U_users_label.setText(_translate("MainWindow", "Отчество"))
-        self.Email_users_label.setText(_translate("MainWindow", "Email"))
-        self.delete_users_button.setText(_translate("MainWindow", "Удалить"))
-        self.add_users_button.setText(_translate("MainWindow", "Добавить"))
-        self.edit_users_button.setText(_translate("MainWindow", "Изменить"))
-        self.login_users_label.setText(_translate("MainWindow", "Логин"))
-        self.password_users_label.setText(_translate("MainWindow", "Пароль"))
-        self.all_pages.setTabText(self.all_pages.indexOf(self.users_view), _translate("MainWindow", "Пользователи"))
-        self.name_po_po_label.setText(_translate("MainWindow", "Название ПО"))
-        self.version_po_po_label.setText(_translate("MainWindow", "Версия ПО"))
-        self.kluch_po_label.setText(_translate("MainWindow", "Лицензионный ключ"))
-        self.delete_po_button.setText(_translate("MainWindow", "Удалить"))
-        self.add_po_button.setText(_translate("MainWindow", "Добавить"))
-        self.edit_po_button.setText(_translate("MainWindow", "Изменить"))
-        self.all_pages.setTabText(self.all_pages.indexOf(self.po_view), _translate("MainWindow", "Программное обеспечение"))
-        self.name_error_label.setText(_translate("MainWindow", "Название ошибки"))
-        self.about_error__label.setText(_translate("MainWindow", "Описание ошибки"))
-        self.s.setText(_translate("MainWindow", "Отправить"))
-        self.all_pages.setTabText(self.all_pages.indexOf(self.errors_view), _translate("MainWindow", "Ошибки"))
-        self.user_prelogin_info_label.setText(_translate("MainWindow", "Пользователь:"))
-        self.user_login_info.setText(_translate("MainWindow", "login"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
+    MainWindow = QtWidgets.QWidget()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
