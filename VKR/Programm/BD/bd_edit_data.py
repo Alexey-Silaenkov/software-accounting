@@ -3,6 +3,8 @@ from .shifr import Crypt
 
 class Bd_edit:
 
+    crypt = Crypt()
+
     def edit_error(self, id_error: int, naim_error: str, opisanie: str, sposobYstranenia: str):
         ''' Изменение данных об ошибке'''
 
@@ -21,17 +23,23 @@ class Bd_edit:
     def edit_polz(self, id_polz: int, F_P: str, I_P: str, O_P: str, email: str, login: str):
         ''' Изменение данных о пользователе'''
 
+        F_P = self.crypt.encrypt(F_P)
+        I_P = self.crypt.encrypt(I_P)
+        O_P = self.crypt.encrypt(O_P)
+        email = self.crypt.encrypt(email)
+        login = self.crypt.encrypt(login)
+
         requestString = f'''
         EXEC polz_edit 
-        @id_polz = {id_polz}, 
-        @F_P = {F_P}, 
-        @I_P = {I_P}, 
-        @O_P = {O_P}, 
-        @email = {email}, 
-        @login = {login}
+        @id_polz = '{id_polz}', 
+        @F_P = '{F_P}', 
+        @I_P = '{I_P}', 
+        @O_P = '{O_P}', 
+        @email = '{email}', 
+        @login = '{login}'
         '''
         update_bd = Update_bd()
-        update_bd.all_edit_func(requestString)
+        return update_bd.all_edit_func(requestString)
 
 
     def edit_polz_full(self, id_polz: int, F_P: str, I_P: str, O_P: str, email: str, login: str, password: str):
@@ -92,12 +100,15 @@ class Bd_edit:
     def edit_po(self, id_PO: int, naim_po:str, kol_po: int, vers_po: str):
         ''' Изменение данных о программном обеспечении'''
 
+        naim_po = self.crypt.encrypt(naim_po)
+        vers_po = self.crypt.encrypt(vers_po)
+
         requestString = f'''
-        EXEC pokol_update 
-        @id_PO = {id_PO},
-        @naim_po = {naim_po},
-        @kol_po = {kol_po},
-        @vers_po = {vers_po}
+        EXEC po_update 
+        @id_PO = '{id_PO}',
+        @naim_po = '{naim_po}',
+        @kol_po = '{kol_po}',
+        @vers_po = '{vers_po}'
         '''
         update_bd = Update_bd()
         update_bd.all_edit_func(requestString)
@@ -108,8 +119,8 @@ class Bd_edit:
 
         requestString = f'''
         EXEC pokol_update 
-        @id_PO = {id_PO},
-        @kol_po = {kol_po}
+        @id_PO = '{id_PO}',
+        @kol_po = '{kol_po}'
         '''
         update_bd = Update_bd()
         update_bd.all_edit_func(requestString)
@@ -120,8 +131,8 @@ class Bd_edit:
 
         requestString = f'''
         EXEC kluch_edit 
-        @id_lickluch = {id_lickluch},
-        @kod = {kod}
+        @id_lickluch = '{id_lickluch}',
+        @kod = '{kod}'
         '''
         update_bd = Update_bd()
         update_bd.all_edit_func(requestString)

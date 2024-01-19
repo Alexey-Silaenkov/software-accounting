@@ -29,6 +29,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(20)
         self.all_pages.setFont(font)
+        MainWindow.setWindowTitle("YchPO")
         self.all_pages.setStyleSheet("")
         self.all_pages.setObjectName("all_pages")
         self.zayavki_view = QtWidgets.QWidget()
@@ -397,15 +398,20 @@ class Ui_MainWindow(object):
         
 
         self.fill_data_users()
-        self.fill_data_zayavki()
+        # self.fill_data_zayavki()
         self.fill_data_po()
 
         self.set_buttons_click()
 
         self.edit_login = ""
 
-        self.delete_po_button.hide()
+        # self.delete_po_button.hide()
+        self.delete_po_button.setText("Лицензии")
+
         self.delete_users_button.hide()
+
+        
+            
 
         
 
@@ -415,6 +421,25 @@ class Ui_MainWindow(object):
         self.user_login_info.setText(my_login)
         self.user_prelogin_info_label.setText(f"{role}:")
         self.dostup = dostup
+
+        print(dostup)
+        if dostup:
+            dostup_zayavki = dostup[1]
+            dostup_users = dostup[0]
+            dostup_po = dostup[2]
+            dostup_student_zayavki = dostup[3]
+
+            if not dostup_users and not dostup_po:
+                self.all_pages.removeTab(1)
+                self.all_pages.removeTab(1)
+
+            elif not dostup_po:
+                self.all_pages.removeTab(2)
+
+                
+            if not dostup_zayavki:
+                pass
+        
         
     
 
@@ -425,6 +450,8 @@ class Ui_MainWindow(object):
         self.edit_users_button.clicked.connect(self.edit_user)
         self.add_po_button.clicked.connect(self.add_po)
         self.s.clicked.connect(self.send_error)
+        self.delete_po_button.clicked.connect(self.back_to_po_button)
+        self.edit_po_button.clicked.connect(self.edit_po_button_click)
         
 
     
@@ -460,10 +487,13 @@ class Ui_MainWindow(object):
         registr = Registration()
         registr.registration(f_user, i_user, o_user, email_user, login_user, password_user, dolj_user)
 
+
         mb.showinfo("Информация", "Пользователь добавлен")
         
-        # self.users_data_from_bd.clear()
-        # self.fill_data_users()
+        self.fill_data_users()
+        self.clear_all()
+
+
 
 # Изменение данных пользователя
     def edit_user(self):
@@ -491,12 +521,15 @@ class Ui_MainWindow(object):
 
 
         get_data = Bd_get_data()
-        dolj_id = get_data.get_iddolj(self.my_login)
+        dolj_id = get_data.get_iddolj(self.user_login_info.text())
 
         bd_edit = Bd_edit()
-        bd_edit.edit_polz(id_user, f_user, i_user, o_user, email_user, login_user)
+        print(bd_edit.edit_polz(id_user, f_user, i_user, o_user, email_user, login_user))
+        self.fill_data_users()
 
         mb.showinfo("Информация", "Пользователь изменен")
+
+        self.clear_all()
 
 
 
@@ -509,6 +542,8 @@ class Ui_MainWindow(object):
 # Заполнение таблицы пользователей
     def fill_data_users(self):
         
+        self.users_data_from_bd.clear()
+        self.users_data_from_bd.setRowCount(0)     
         self.users_data_from_bd.setColumnCount(7)
         self.users_data_from_bd.setHorizontalHeaderLabels(["Номер пользователя", "Фамилия", "Имя", "Очество", "Email", "Логин", "Пароль"])
         
@@ -529,25 +564,19 @@ class Ui_MainWindow(object):
             self.users_data_from_bd.setItem(rows, 4, QTableWidgetItem(p[4]))
             self.users_data_from_bd.setItem(rows, 5, QTableWidgetItem(p[5]))
             self.users_data_from_bd.setItem(rows, 6, QTableWidgetItem("********"))
-
-
-            rows = self.users_data_from_bd.rowCount()
             
-
-      
-        self.users_data_from_bd.resizeColumnsToContents()
 
 # Получение данных при клике
     def users_data_from_bd_click(self):
         all_data = self.users_data_from_bd.selectedItems()
-        
-        self.F_U_users_input.setText(all_data[1].text())
-        self.I_U_users_input.setText(all_data[2].text())
-        self.O_U_users_input.setText(all_data[3].text())
-        self.Email_users_input.setText(all_data[4].text())
-        self.login_users_input.setText(all_data[5].text())
+        if all_data:       
+            self.F_U_users_input.setText(all_data[1].text())
+            self.I_U_users_input.setText(all_data[2].text())
+            self.O_U_users_input.setText(all_data[3].text())
+            self.Email_users_input.setText(all_data[4].text())
+            self.login_users_input.setText(all_data[5].text())
 
-        self.edit_login = self.login_users_input.text()
+            self.edit_login = self.login_users_input.text()
 
 
         
@@ -557,6 +586,8 @@ class Ui_MainWindow(object):
 # Заполнение таблицы заявок
     def fill_data_zayavki(self):
         
+        self.users_data_from_bd.clear()
+        self.users_data_from_bd.setRowCount(0) 
         self.zayavki_data_from_bd.setColumnCount(6)
         self.zayavki_data_from_bd.setHorizontalHeaderLabels(["Номер заявки", "Название ПО", "Версия ПО", "Статус", "ФИО", "Логин"])
         
@@ -578,21 +609,17 @@ class Ui_MainWindow(object):
             self.zayavki_data_from_bd.setItem(rows, 5, QTableWidgetItem("ФИО"))
             self.zayavki_data_from_bd.setItem(rows, 6, QTableWidgetItem(p[6]))
 
-            rows = self.zayavki_data_from_bd.rowCount()
-            
-
-      
-        self.zayavki_data_from_bd.resizeColumnsToContents()
 
 
 # Получение данных при клике
     def zayavki_data_from_bd_click(self):
         all_data = self.users_data_from_bd.selectedItems()
         
-        self.status_zayavka_input.setText(all_data[1].text())
-        self.name_po_zayavka_input.setText(all_data[2].text())
-        self.version_po_zayavka_input.setText(all_data[3].text())
-        self.login_zayavka_input.setText(all_data[4].text())
+        if all_data: 
+            self.status_zayavka_input.setText(all_data[1].text())
+            self.name_po_zayavka_input.setText(all_data[2].text())
+            self.version_po_zayavka_input.setText(all_data[3].text())
+            self.login_zayavka_input.setText(all_data[4].text())
         
 
         self.edit_login = self.login_users_input.text()
@@ -614,9 +641,11 @@ class Ui_MainWindow(object):
 
 
 
-# Заполнение таблицы заявок
+# Заполнение таблицы ПО
     def fill_data_po(self):
         
+        self.po_data_from_bd.clear()
+        self.po_data_from_bd.setRowCount(0) 
         self.po_data_from_bd.setColumnCount(4)
         self.po_data_from_bd.setHorizontalHeaderLabels(["Номер ПО", "Название ПО", "Версия ПО", "Количество"])
         
@@ -635,24 +664,80 @@ class Ui_MainWindow(object):
             self.po_data_from_bd.setItem(rows, 2, QTableWidgetItem(p[3]))
             self.po_data_from_bd.setItem(rows, 3, QTableWidgetItem(str(p[2])))
 
+        self.flag_po = "po"
+
+    def fill_data_lickluch(self):
+        
+        self.po_data_from_bd.clear()
+        self.po_data_from_bd.setRowCount(0) 
+        self.po_data_from_bd.setColumnCount(2)
+        self.po_data_from_bd.setHorizontalHeaderLabels(["Код", "Лицензионный ключ"])
+        
+        self.po_data_from_bd.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.po_data_from_bd.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.po_data_from_bd.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.po_data_from_bd.itemSelectionChanged.connect(self.po_data_from_bd_click)
+
+        bd_get = Bd_get_data()
+        po = bd_get.get_keys(self.id_po)
+        for p in po:
             rows = self.po_data_from_bd.rowCount()
+            self.po_data_from_bd.setRowCount(rows + 1)
+            self.po_data_from_bd.setItem(rows, 0, QTableWidgetItem(str(p[1])))
+            self.po_data_from_bd.setItem(rows, 1, QTableWidgetItem(str(p[0])))
+        self.flag_po = "keys"
             
-
-      
-        self.po_data_from_bd.resizeColumnsToContents()
-
 
 # Получение данных при клике
     def po_data_from_bd_click(self):
         all_data = self.po_data_from_bd.selectedItems()
         
-        self.name_po_po_input.setText(all_data[1].text())
-        self.version_po_po_input.setText(all_data[2].text())
+        if all_data: 
+
+            if self.flag_po == "po":
+                self.id_po = all_data[0].text()
+                self.name_po_po_input.setText(all_data[1].text())
+                self.version_po_po_input.setText(all_data[2].text())
+                self.count_keys = all_data[3].text()
+            else:
+                self.id_lickluch = all_data[0].text()
+                self.kluch_po_input.setText(all_data[1].text())
+
+            
+
+    # def lickluch_data_from_bd_click(self):
+    #     all_data = self.po_data_from_bd.selectedItems()
         
+    #     if all_data: 
+    #         self.kluch_po_input.setText(all_data[0].text())
+
+    def back_to_po_button(self):
+        try:
+            if self.id_po:
+                if self.flag_po == "po":
+                    self.delete_po_button.setText("Назад к ПО")
+
+                    self.name_po_po_input.setEnabled(False)
+                    self.version_po_po_input.setEnabled(False)
+                    self.fill_data_lickluch()
+                else:
+                    self.delete_po_button.setText("Лицензии")
+
+                    self.name_po_po_input.setEnabled(True)
+                    self.version_po_po_input.setEnabled(True)
+                    self.fill_data_po()
+                    self.clear_all()
+            else:
+                mb.showerror("Ошибка", "Выберите ПО")
+
+                
+
+        except:
+                self.fill_data_po()
+                mb.showerror("Ошибка", "Что-то пошло не так")
+            
+
         
-
-
-
 
 # Добавление ПО
     def add_po(self):
@@ -661,14 +746,74 @@ class Ui_MainWindow(object):
         vers_po = self.version_po_po_input.text()
         kluch_po = self.kluch_po_input.text()
 
-        if not name_po or not vers_po:
-            mb.showerror("Ошибка", "Не все данные заполнены!")
-            return
+        if self.flag_po == "po":
 
-        add_po = Bd_add()
-        add_po.add_po(name_po, 0, vers_po)
+            if not name_po or not vers_po:
+                mb.showerror("Ошибка", "Не все данные заполнены!")
+                return
 
-        mb.showinfo("Информация", "ПО добавлено")
+            add_po = Bd_add()
+            add_po.add_po(name_po, 0, vers_po)
+
+            mb.showinfo("Информация", "ПО добавлено")
+
+            self.fill_data_po()
+            self.clear_all()
+
+        
+        else:
+            if not name_po or not vers_po or not kluch_po:
+                mb.showerror("Ошибка", "Не все данные заполнены!")
+                return
+
+            add_po = Bd_add()
+            add_po.add_kluch(kluch_po, 1, self.id_po)
+
+            edit_key = Bd_edit()
+            edit_key.edit_kol_po(self.id_po, (int(self.count_keys) + 1))
+            mb.showinfo("Информация", "Ключ добавлен")
+
+
+            self.fill_data_lickluch()
+            self.kluch_po_input.setText("")
+            
+
+# Изменение ПО и ключей
+    def edit_po_button_click(self):
+        
+        bd_edit = Bd_edit()
+
+        if self.flag_po == "po":
+            
+            name_po = self.name_po_po_input.text()
+            vers_po = self.version_po_po_input.text()
+
+            if not name_po or not vers_po or not self.id_po:
+                mb.showerror("Ошибка", "Не все данные заполнены!")
+                return
+
+            print(bd_edit.edit_po(int(self.id_po), name_po, int(self.count_keys), vers_po))
+            self.fill_data_po()
+            self.clear_all()
+
+
+
+
+        else:
+            key_po = self.kluch_po_input.text()
+
+            if not key_po or not self.id_lickluch:
+                mb.showerror("Ошибка", "Не все данные заполнены!")
+                return
+
+            bd_edit.edit_kluch(self.id_lickluch, key_po)
+            self.fill_data_lickluch()
+            self.kluch_po_input.setText("")
+
+
+        mb.showinfo("Информация", "Информация изменена")
+
+
 
 
 # Отправка сообщений об ошибках
@@ -687,8 +832,31 @@ class Ui_MainWindow(object):
         send_mail = Send_email()
         send_mail.send("ychet.po", "swfi ciqc lani rhvm" ,"ychet.po@gmail.com", send_mail.errorHtml(fio, opisanie))
         mb.showinfo("Info", "Сообщение об ошибке отправлено")
+        self.clear_all()
 
 
+    def clear_all(self):
+        self.name_po_po_input.setText("")
+        self.version_po_po_input.setText("")
+        self.kluch_po_input.setText("")
+        self.name_error_input.setText("")
+        self.about_error_input.setText("")
+        self.F_U_users_input.setText("")
+        self.I_U_users_input.setText("")
+        self.O_U_users_input.setText("")
+        self.Email_users_input.setText("")
+        self.login_users_input.setText("")
+        self.password_users_input.setText("")
+
+        self.lineEdit_5.setText("")
+        self.status_zayavka_input.setText("")
+        self.name_po_zayavka_input.setText("")
+        self.version_po_zayavka_input.setText("")
+        self.login_zayavka_input.setText("")
+
+        self.id_po = ""
+
+        
 
 if __name__ == "__main__":
     import sys

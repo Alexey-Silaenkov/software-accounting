@@ -36,7 +36,7 @@ class First_login:
         add_data.add_dolj("Администратор",1)
         add_data.add_sovm_polz_dolj(1,1)
 
-        add_data.add_role("teacher",  0, 1, 1, 1)
+        add_data.add_role("teacher",  1, 1, 0, 1)
         add_data.add_dolj("Преподаватель", 2)
         add_data.add_role("student", 0, 0, 0, 1)
         add_data.add_dolj("Студент", 3)

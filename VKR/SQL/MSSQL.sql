@@ -1,10 +1,5 @@
-IF EXISTS (select * from sys.databases where name = 'Ychpo')
-BEGIN 
-    DROP DATABASE Ychpo
-    PRINT 'DROP DATABASE Ychpo'
-END
-    CREATE DATABASE Ychpo;
-    PRINT 'CREATE DATABASE Ychpo'
+
+CREATE DATABASE Ychpo;
 
 USE Ychpo
 
@@ -64,7 +59,7 @@ CREATE TABLE [DBO].[sovm]
 constraint [PK_id_sovm] PRIMARY KEY CLUSTERED
 	([id_sovm] ASC) on [PRIMARY],
 	CONSTRAINT [FK_polzsovm_id] FOREIGN KEY ([polzsovm_id])
-REFERENCES [DBO].[polz]([id_polz]),
+REFERENCES [DBO].[polz]([id_polz]) ON DELETE CASCADE,
 	CONSTRAINT [FK_dolj_id] FOREIGN KEY ([dolj_id])
 REFERENCES [DBO].[dolj]([id_dolj]),
 )
@@ -78,7 +73,7 @@ CREATE TABLE [DBO].[zayavka]
 constraint [PK_id_zayavka] PRIMARY KEY CLUSTERED
 	([id_zayavka] ASC) on [PRIMARY],
 	CONSTRAINT [FK_polz_id] FOREIGN KEY ([polz_id])
-REFERENCES [DBO].[polz]([id_polz]),
+REFERENCES [DBO].[polz]([id_polz]) ON DELETE CASCADE,
 	CONSTRAINT [FK_poz_id] FOREIGN KEY ([poz_id])
 REFERENCES [DBO].[po]([id_po]),
 )
@@ -116,7 +111,7 @@ CREATE TABLE [DBO].[sovmosh]
 constraint [PK_id_sovmosh] PRIMARY KEY CLUSTERED
 	([id_sovmosh] ASC) on [PRIMARY],
 	CONSTRAINT [FK_polzsovmosh_id] FOREIGN KEY ([polzsovmosh_id])
-REFERENCES [DBO].[polz]([id_polz]),
+REFERENCES [DBO].[polz]([id_polz]) ON DELETE CASCADE,
 	CONSTRAINT [FK_error_id] FOREIGN KEY ([error_id])
 REFERENCES [DBO].[error]([id_error]),
 )

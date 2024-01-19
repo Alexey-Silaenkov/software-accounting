@@ -63,9 +63,9 @@ class Bd_add:
 
         requestString = f'''
         EXEC kluch_add 
-        @kod = {kod},
-        @statuskluch ={statuskluch},
-        @pol_id = {pol_id}
+        @kod = '{kod}',
+        @statuskluch = '{statuskluch}',
+        @pol_id = '{pol_id}'
         '''
         update_bd = Update_bd()
         update_bd.all_edit_func(requestString)
@@ -79,9 +79,9 @@ class Bd_add:
 
         requestString = f'''
         EXEC po_add 
-        @naim_po = {naim_po},
-        @kol_po = {kol_po},
-        @vers_po = {vers_po}
+        @naim_po = '{naim_po}',
+        @kol_po = '{kol_po}',
+        @vers_po = '{vers_po}'
         '''
         update_bd = Update_bd()
         update_bd.all_edit_func(requestString)

@@ -205,14 +205,21 @@ class Bd_get_data:
 
         connect.conn.commit()
         connect.disconnect()
-
-        result = []
-        for i in range(len(result_set)):
-            dostup = str(result_set[i]).replace("(",'').replace(")",'').replace(",",'')
-            result.append(dostup)
             
 
-        return result
+        result = []
+        key = []
+        for item in result_set:
+            for k in item:
+                try:
+                    key.append(self.crypt.decrypt(k))
+                except:
+                    key.append(k)
+            result.append(key)
+            key = []
+            
+
+        return result[0]
 
 
     def get_fio(self, login):
@@ -270,6 +277,43 @@ class Bd_get_data:
 
         connect.conn.commit()
         connect.disconnect()
+        print(result_set)
 
         role = self.crypt.decrypt(str(result_set[0]).replace("(",'').replace(")",'').replace(",",'').replace("'",''))
         return role
+
+
+    def get_keys(self, id_po):
+
+
+        requestString = f'''
+        SELECT [kod],
+        [id_lickluch]
+        FROM [Ychpo].[dbo].[lickluch]
+        where [pol_id] = '{id_po}'
+        '''
+        
+        connect = BdConnect()
+        connect.connect()
+
+        dbCursor = connect.conn.cursor()
+
+        dbCursor.execute(requestString)
+        result_set = dbCursor.fetchall()
+
+        connect.conn.commit()
+        connect.disconnect()
+
+        result = []
+        key = []
+        for item in result_set:
+            for k in item:
+                try:
+                    key.append(self.crypt.decrypt(k))
+                except:
+                    key.append(k)
+            result.append(key)
+            key = []
+            
+
+        return result
