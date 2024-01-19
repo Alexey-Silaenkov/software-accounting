@@ -156,6 +156,7 @@ class Ui_Form_utorization(object):
 
         global Form_utorization, Form_main, my_login, ui_main
                 
+        auth = Autorization()
         my_login = login
 
         Form_utorization.hide()
@@ -163,8 +164,10 @@ class Ui_Form_utorization(object):
         get_data = Bd_get_data()
         role = get_data.get_role(login)
         dostup = get_data.get_dostup(login)
+        my_id_user = auth.get_id(my_login)
         
-        ui_main.set_name(login, role, dostup)
+        ui_main.set_name(login, role, dostup, my_id_user)
+        ui_main.fill_data_users()
         Form_main.show()
 
         

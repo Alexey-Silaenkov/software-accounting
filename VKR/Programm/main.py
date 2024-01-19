@@ -7,6 +7,8 @@ from BD import *
 import tkinter.messagebox as mb
 from allwidjets import *
 from modules import *
+import time
+from datetime import datetime
 
 
 
@@ -417,10 +419,12 @@ class Ui_MainWindow(object):
 
 
 
-    def set_name(self, my_login, role, dostup):
+    def set_name(self, my_login, role, dostup, my_id_user):
         self.user_login_info.setText(my_login)
+        self.user_my_id = my_id_user
         self.user_prelogin_info_label.setText(f"{role}:")
         self.dostup = dostup
+        self.flag_po_zayavki = "po_zayavki"
 
         print(dostup)
         if dostup:
@@ -438,7 +442,33 @@ class Ui_MainWindow(object):
 
                 
             if not dostup_zayavki:
-                pass
+                self.add_zayavka_button.hide()
+                self.login_zayavka_input.hide()
+                self.login_zayavka_label.hide()
+                self.status_zayavka_input.hide()
+                self.status_zayavka_label.hide()
+                self.number_zayavka_label.hide()
+                self.lineEdit_5.hide()
+                self.name_po_zayavka_input.setEnabled(False)
+                self.version_po_zayavka_input.setEnabled(False)
+                
+                self.edit_zayavka_button.setText("Запросить ПО")
+                self.delete_zayavka_button.setText("Мои ключи")
+                self.flag_po_zayavki = "po_not_zayavki"
+            else:
+                self.delete_zayavka_button.setText("Вывести отчет")
+                self.edit_zayavka_button.setText("Отклонить")
+                self.add_zayavka_button.setText("Одобрить")
+                self.lineEdit_5.setEnabled(False)
+                self.status_zayavka_input.setEnabled(False)
+                self.name_po_zayavka_input.setEnabled(False)
+                self.version_po_zayavka_input.setEnabled(False)
+                self.login_zayavka_input.setEnabled(False)
+            
+            self.fill_data_po_zayavki()
+            
+
+
         
         
     
@@ -452,6 +482,10 @@ class Ui_MainWindow(object):
         self.s.clicked.connect(self.send_error)
         self.delete_po_button.clicked.connect(self.back_to_po_button)
         self.edit_po_button.clicked.connect(self.edit_po_button_click)
+        self.edit_zayavka_button.clicked.connect(self.edit_po_zayavka_button_click)
+        self.add_zayavka_button.clicked.connect(self.zayavki_agree)
+        self.delete_zayavka_button.clicked.connect(self.create_report)
+        
         
 
     
@@ -553,7 +587,13 @@ class Ui_MainWindow(object):
         self.users_data_from_bd.itemSelectionChanged.connect(self.users_data_from_bd_click)
 
         bd_get = Bd_get_data()
-        polz = bd_get.get_polz_view()
+        print()
+        print(self.user_prelogin_info_label.text())
+        if self.user_prelogin_info_label.text() == "Администратор:":
+            polz = bd_get.get_polz_view()
+        else:
+            polz = bd_get.get_polz_view_not_admin()
+
         for p in polz:
             rows = self.users_data_from_bd.rowCount()
             self.users_data_from_bd.setRowCount(rows + 1)
@@ -580,35 +620,6 @@ class Ui_MainWindow(object):
 
 
         
-
-
-
-# Заполнение таблицы заявок
-    def fill_data_zayavki(self):
-        
-        self.users_data_from_bd.clear()
-        self.users_data_from_bd.setRowCount(0) 
-        self.zayavki_data_from_bd.setColumnCount(6)
-        self.zayavki_data_from_bd.setHorizontalHeaderLabels(["Номер заявки", "Название ПО", "Версия ПО", "Статус", "ФИО", "Логин"])
-        
-        self.zayavki_data_from_bd.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.zayavki_data_from_bd.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.zayavki_data_from_bd.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.zayavki_data_from_bd.itemSelectionChanged.connect(self.zayavki_data_from_bd_click)
-
-        bd_get = Bd_get_data()
-        polz = bd_get.get_zayavki_view()
-        for p in polz:
-            rows = self.users_data_from_bd.rowCount()
-            self.zayavki_data_from_bd.setRowCount(rows + 1)
-            self.zayavki_data_from_bd.setItem(rows, 0, QTableWidgetItem(str(p[0])))
-            self.zayavki_data_from_bd.setItem(rows, 1, QTableWidgetItem(p[1]))
-            self.zayavki_data_from_bd.setItem(rows, 2, QTableWidgetItem(p[2]))
-            self.zayavki_data_from_bd.setItem(rows, 3, QTableWidgetItem(p[3]))
-            self.zayavki_data_from_bd.setItem(rows, 4, QTableWidgetItem(p[4]))
-            self.zayavki_data_from_bd.setItem(rows, 5, QTableWidgetItem("ФИО"))
-            self.zayavki_data_from_bd.setItem(rows, 6, QTableWidgetItem(p[6]))
-
 
 
 # Получение данных при клике
@@ -771,6 +782,7 @@ class Ui_MainWindow(object):
 
             edit_key = Bd_edit()
             edit_key.edit_kol_po(self.id_po, (int(self.count_keys) + 1))
+            self.count_keys = int(self.count_keys) + 1
             mb.showinfo("Информация", "Ключ добавлен")
 
 
@@ -814,6 +826,120 @@ class Ui_MainWindow(object):
         mb.showinfo("Информация", "Информация изменена")
 
 
+# Заполнение таблицы ПО в заявках пользователю
+    def fill_data_po_zayavki(self):
+        
+        if self.flag_po_zayavki != "po_zayavki":
+        
+            self.zayavki_data_from_bd.clear()
+            self.zayavki_data_from_bd.setRowCount(0) 
+            self.zayavki_data_from_bd.setColumnCount(3)
+            self.zayavki_data_from_bd.setHorizontalHeaderLabels(["Номер ПО", "Название ПО", "Версия ПО"])
+            
+            self.zayavki_data_from_bd.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+            self.zayavki_data_from_bd.setSelectionBehavior(QAbstractItemView.SelectRows)
+            self.zayavki_data_from_bd.setSelectionMode(QAbstractItemView.SingleSelection)
+            self.zayavki_data_from_bd.itemSelectionChanged.connect(self.po_zayavki_data_from_bd_click)
+
+            bd_get = Bd_get_data()
+            po = bd_get.get_po_zayavki_view()
+            for p in po:
+                rows = self.zayavki_data_from_bd.rowCount()
+                self.zayavki_data_from_bd.setRowCount(rows + 1)
+                self.zayavki_data_from_bd.setItem(rows, 0, QTableWidgetItem(str(p[0])))
+                self.zayavki_data_from_bd.setItem(rows, 1, QTableWidgetItem(p[1]))
+                self.zayavki_data_from_bd.setItem(rows, 2, QTableWidgetItem(p[3]))
+
+        # self.flag_po_zayavki = "po_zayavki"
+        else:
+            self.zayavki_data_from_bd.clear()
+            self.zayavki_data_from_bd.setRowCount(0) 
+            self.zayavki_data_from_bd.setColumnCount(7)
+            self.zayavki_data_from_bd.setHorizontalHeaderLabels(["Номер заявки", "Название ПО", "Версия ПО", "Фамилия", "Имя", "Отчество", "Логин"])
+            
+            self.zayavki_data_from_bd.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+            self.zayavki_data_from_bd.setSelectionBehavior(QAbstractItemView.SelectRows)
+            self.zayavki_data_from_bd.setSelectionMode(QAbstractItemView.SingleSelection)
+            self.zayavki_data_from_bd.itemSelectionChanged.connect(self.po_zayavki_data_from_bd_click)
+
+            bd_get = Bd_get_data()
+            po = bd_get.get_zayavki_view()
+            for p in po:
+                rows = self.zayavki_data_from_bd.rowCount()
+                self.zayavki_data_from_bd.setRowCount(rows + 1)
+                self.zayavki_data_from_bd.setItem(rows, 0, QTableWidgetItem(str(p[0])))
+                self.zayavki_data_from_bd.setItem(rows, 1, QTableWidgetItem(p[1]))
+                self.zayavki_data_from_bd.setItem(rows, 2, QTableWidgetItem(p[2]))
+                self.zayavki_data_from_bd.setItem(rows, 3, QTableWidgetItem(p[3]))
+                self.zayavki_data_from_bd.setItem(rows, 4, QTableWidgetItem(p[4]))
+                self.zayavki_data_from_bd.setItem(rows, 5, QTableWidgetItem(p[5]))
+                self.zayavki_data_from_bd.setItem(rows, 6, QTableWidgetItem(p[6]))
+                
+
+
+# Получение данных при клике
+    def po_zayavki_data_from_bd_click(self):
+        all_data = self.zayavki_data_from_bd.selectedItems()
+        
+        if all_data: 
+
+            if self.flag_po_zayavki != "po_zayavki":
+                self.id_po_zayavka = all_data[0].text()
+                self.name_po_zayavka_input.setText(all_data[1].text())
+                self.version_po_zayavka_input.setText(all_data[2].text())
+            else:
+                self.lineEdit_5.setText(all_data[0].text())
+                self.status_zayavka_input.setText("В работе")
+                self.name_po_zayavka_input.setText(all_data[1].text())
+                self.version_po_zayavka_input.setText(all_data[2].text())
+                self.login_zayavka_input.setText(all_data[6].text())
+                
+
+    
+    def edit_po_zayavka_button_click(self):
+        
+        bd_add = Bd_add()
+
+        if self.flag_po_zayavki != "po_zayavki":
+            
+            id_po = self.id_po_zayavka
+            name_po = self.name_po_zayavka_input.text()
+            vers_po = self.version_po_zayavka_input.text()
+            id_user = self.user_my_id
+
+            if not id_po or not name_po or not vers_po:
+                mb.showerror("Ошибка", "Нажмите на ПО")
+                return
+
+            print(bd_add.add_zayavka("В работе", id_po, id_user))
+            mb.showinfo("Информация", "Ваша заявка отправлена")
+            
+            self.clear_all()
+            
+
+
+
+
+        else:
+            login = self.login_zayavka_input.text()
+            id_zayavka = int(self.lineEdit_5.text())
+            if not login:
+                mb.showerror("Ошибка", "Не все данные заполнены!")
+                return
+            bd_edit = Bd_edit()
+
+            bd_edit.edit_zayavka(id_zayavka, "Отклонено")
+
+            get_data = Bd_get_data()
+            email = str(get_data.get_email(login))
+            self.send_key_to_user("Вам отказано в выдаче лицензионного ключа", email)
+            self.fill_data_po_zayavki()
+
+            
+
+            # bd_edit.edit_kluch(self.id_lickluch, key_po)
+            # self.fill_data_lickluch()
+            # self.kluch_po_input.setText("")
 
 
 # Отправка сообщений об ошибках
@@ -834,7 +960,7 @@ class Ui_MainWindow(object):
         mb.showinfo("Info", "Сообщение об ошибке отправлено")
         self.clear_all()
 
-
+# Очистка всех полей
     def clear_all(self):
         self.name_po_po_input.setText("")
         self.version_po_po_input.setText("")
@@ -857,6 +983,66 @@ class Ui_MainWindow(object):
         self.id_po = ""
 
         
+# Отправка сообщений
+    def send_key_to_user(self, key, user_mail):
+        
+        send_mail = Send_email()
+        send_mail.send("ychet.po", "swfi ciqc lani rhvm" , user_mail, send_mail.kluchHtml(key))
+        mb.showinfo("Info", "Сообщение отправлено студенту")
+        self.clear_all()
+
+
+# Одобрение заявки
+    def zayavki_agree(self):
+
+        login = self.login_zayavka_input.text()
+        id_zayavka = int(self.lineEdit_5.text())
+        name = self.name_po_zayavka_input.text()
+        vers = self.version_po_zayavka_input.text()
+
+        if not login:
+            mb.showerror("Ошибка", "Не все данные заполнены!")
+            return
+        bd_edit = Bd_edit()
+
+        bd_edit.edit_zayavka(id_zayavka, "Готово")
+
+        get_data = Bd_get_data()
+        email = str(get_data.get_email(login))
+        
+        key_info = get_data.get_code(name, vers)
+        
+
+        id_key = int(key_info[0])
+        key = key_info[3]
+        kol_po = int(key_info[5]) - 1
+        id_po = int(key_info[6])
+        # time = time.strftime("%H:%M:%S", time.localtime())
+        # date = datetime.today().strftime('%Y-%m-%d')
+
+        time = ""
+        date = ""
+
+        bd_edit.edit_lickluch(id_key, time, date, False)
+        bd_edit.edit_kol_po(id_po, kol_po)
+
+        self.send_key_to_user(key, email)
+        self.fill_data_po_zayavki()
+
+
+# Создание отчета
+    def create_report(self):
+
+        get_data = Bd_get_data()
+        data = get_data.get_statistic()
+
+        doc = ImportDoc()
+        for item in data:
+            fio = f'{item[3]} {item[4]} {item[5]}'
+            po = f'{item[0]} {item[1]} {item[6]} {item[7]}'
+            doc.importDoc(fio, po)
+        doc.saveDoc()
+
 
 if __name__ == "__main__":
     import sys

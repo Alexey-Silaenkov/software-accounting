@@ -92,9 +92,9 @@ class Bd_add:
 
         requestString = f'''
         EXEC zayavka_add 
-        @status = {status},
-        @poz_id = {poz_id},
-        @polz_id = {polz_id}
+        @status = '{status}',
+        @poz_id = '{poz_id}',
+        @polz_id = '{polz_id}'
         '''
         update_bd = Update_bd()
         update_bd.all_edit_func(requestString)

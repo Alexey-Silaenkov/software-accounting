@@ -8,13 +8,14 @@ class ImportDoc:
 
     # Создание и добавление стандартных параметров документа
     doc = docx.Document()
-    # doc.add_picture('.images/Ychpo.jpg', width = docx.shared.Cm(10))
+    # doc.add_picture('.modules/images/Ychpo.jpg', width = docx.shared.Cm(10))
     doc.add_heading(f'Отчет по выданным лицензионным ключам на {date.today()} \n', 1)
     
     # добавление параграфов в документ
-    def importDoc(self, user: str, po: str, kluch: str):
+    def importDoc(self, user: str, po: str):
         # добавляем параграф
-        self.doc.add_paragraph(f'Пользователь: {user} \t ПО: {po} \t Ключ: {kluch[:-10]}...')
+        # self.doc.add_paragraph(f'Пользователь: {user} \t ПО: {po} \t Ключ: {kluch[:-10]}...')
+        self.doc.add_paragraph(f'Пользователь: {user} \t ПО: {po}')
 
         
     # Сохранение документа

@@ -76,8 +76,8 @@ class Bd_edit:
 
         requestString = f'''
         EXEC zayavkast_edit 
-        @id_zayavkast = {id_zayavkast},
-        @status = {status}
+        @id_zayavkast = '{id_zayavkast}',
+        @status = '{status}'
         '''
         update_bd = Update_bd()
         update_bd.all_edit_func(requestString)
@@ -88,14 +88,14 @@ class Bd_edit:
 
         requestString = f'''
         EXEC lickluchtd_edit 
-        @id_lickluch = {id_lickluch},
-        @time = {time},
-        @date = {date},
-        @statuskluch = {statuskluch}
+        @id_lickluch = '{id_lickluch}',
+        @time = '{time}',
+        @date = '{date}',
+        @statuskluch = '{statuskluch}'
         '''
         update_bd = Update_bd()
         update_bd.all_edit_func(requestString)
-
+    
 
     def edit_po(self, id_PO: int, naim_po:str, kol_po: int, vers_po: str):
         ''' Изменение данных о программном обеспечении'''

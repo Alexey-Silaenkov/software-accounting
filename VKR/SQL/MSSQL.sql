@@ -152,11 +152,19 @@ as select id_lickluch as 'Номер',naim_po as 'Название ПО', vers_po as 'Версия ПО
 join polz on polz.id_polz = zayavka.polz_id
 join PO on Po.id_PO = zayavka.poz_id
 join lickluch on lickluch.pol_id = PO.id_PO
-where lickluch.statuskluch = 1 and zayavka.status = 'Готово'
+where lickluch.statuskluch = 0 and zayavka.status = 'Готово'
+go
+
+
+create view [dbo].[zayavki_view]
+as select id_zayavka as 'Номер заявки', naim_po as 'Название ПО', vers_po as 'Версия ПО',F_P as'Фамилия',I_P as 'Имя',O_P as 'Отчество', login as 'Логин'  from zayavka
+join polz on polz.id_polz = zayavka.polz_id
+join PO on Po.id_PO = zayavka.poz_id
+where zayavka.status = 'В работе'
 go
 
 create view [dbo].[izmlickluch]
-as select id_lickluch as 'Номер',naim_po as 'Название ПО', kod as 'Код',statuskluch as 'Выдан' from lickluch
+as select id_lickluch as 'Номер ключа',naim_po as 'Название ПО',vers_po as 'Версия', kod as 'Код',statuskluch as 'Доступен', kol_po as 'Количество ПО', id_PO as 'Код ПО' from lickluch
 join PO on PO.id_PO = lickluch.pol_id
 go
 
