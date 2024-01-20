@@ -125,7 +125,7 @@ class Ui_Form_utorization(object):
 
 
         if first_login.is_first_login():
-            print(first_login.first_login("Администратор", "Администратор", "Администратор","ychet.po@gmail.com","admin","admin"))
+            first_login.first_login("Администратор", "Администратор", "Администратор","ychet.po@gmail.com","admin","admin")
             mb.showinfo("Информация", "Пользователь добавлен, вы можете зайти под данными: Логин - admin Пароль - admin")
 
 

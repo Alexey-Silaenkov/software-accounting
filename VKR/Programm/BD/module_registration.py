@@ -61,5 +61,5 @@ class Registration:
             bd_add.add_polz( F_P, I_P, O_P, email, login, password)
             bd_add.add_sovm_polz_dolj(aut.get_id(login), self.get_dolj_id(dolj))
             # bd_add.add_sovm_polz_dolj(self.get_last_id("polz")-1, self.get_dolj_id(dolj))
-            print(aut.get_id(login))
+            # print(aut.get_id(login))
  

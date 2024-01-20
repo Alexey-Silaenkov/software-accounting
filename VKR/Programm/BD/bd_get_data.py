@@ -53,9 +53,9 @@ class Bd_get_data:
 
         user_email = str(result_set[0]).replace("(",'').replace(")",'').replace(",",'')
 
-        print(result_set)
-        print(result_set[0])
-        print(self.crypt.decrypt(user_email))
+        # print(result_set)
+        # print(result_set[0])
+        # print(self.crypt.decrypt(user_email))
 
         return(self.crypt.decrypt(user_email))
 
@@ -258,6 +258,48 @@ class Bd_get_data:
 
         return result_users
 
+
+    def get_self_keys_view(self, login):
+
+        login = self.crypt.encrypt(login)
+
+        requestString = f'''
+        SELECT *
+        FROM [Ychpo].[dbo].[statistika]
+        where [Логин] = '{login}'
+       
+        '''
+        
+        connect = BdConnect()
+        connect.connect()
+
+        dbCursor = connect.conn.cursor()
+
+        dbCursor.execute(requestString)
+        result_set = dbCursor.fetchall()
+
+        connect.conn.commit()
+        connect.disconnect()
+
+        crypt = Crypt()
+        result_users = []
+        result_user = []
+        
+        for item in result_set:
+            for k in item:
+                try:
+                    result_user.append(crypt.decrypt(k))
+                except:
+                    result_user.append(k)
+            if result_user not in result_users:
+                result_users.append(result_user)
+            result_user = []
+        
+                    
+
+        return result_users
+
+
     def get_dostup(self, login):
 
         login = self.crypt.encrypt(login)
@@ -326,8 +368,8 @@ class Bd_get_data:
             fio = self.crypt.decrypt(str(result_set[0][i]).replace("(",'').replace(")",'').replace(",",''))
             result.append(fio)
             
-        print(result)
-        print(result_set)
+        # print(result)
+        # print(result_set)
 
 
         return result
@@ -353,7 +395,7 @@ class Bd_get_data:
 
         connect.conn.commit()
         connect.disconnect()
-        print(result_set)
+        # print(result_set)
 
         role = self.crypt.decrypt(str(result_set[0]).replace("(",'').replace(")",'').replace(",",'').replace("'",''))
         return role

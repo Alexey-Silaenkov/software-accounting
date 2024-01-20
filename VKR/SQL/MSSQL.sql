@@ -148,7 +148,7 @@ role on role.id_role=dolj.role_id
 go
 
 create view [dbo].[statistika]
-as select id_lickluch as 'Номер',naim_po as 'Название ПО', vers_po as 'Версия ПО',F_P as'Фамилия',I_P as 'Имя',O_P as 'Отчество',time as 'Время заказа',date as 'Дата заказа'  from zayavka
+as select id_lickluch as 'Номер',naim_po as 'Название ПО', vers_po as 'Версия ПО',F_P as'Фамилия',I_P as 'Имя',O_P as 'Отчество',time as 'Время заказа',date as 'Дата заказа', kod as 'Код', login as 'Логин'  from zayavka
 join polz on polz.id_polz = zayavka.polz_id
 join PO on Po.id_PO = zayavka.poz_id
 join lickluch on lickluch.pol_id = PO.id_PO

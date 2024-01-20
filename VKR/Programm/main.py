@@ -412,6 +412,8 @@ class Ui_MainWindow(object):
 
         self.delete_users_button.hide()
 
+        self.statistic = ""
+
         
             
 
@@ -426,7 +428,7 @@ class Ui_MainWindow(object):
         self.dostup = dostup
         self.flag_po_zayavki = "po_zayavki"
 
-        print(dostup)
+        # print(dostup)
         if dostup:
             dostup_zayavki = dostup[1]
             dostup_users = dostup[0]
@@ -558,17 +560,12 @@ class Ui_MainWindow(object):
         dolj_id = get_data.get_iddolj(self.user_login_info.text())
 
         bd_edit = Bd_edit()
-        print(bd_edit.edit_polz(id_user, f_user, i_user, o_user, email_user, login_user))
+        bd_edit.edit_polz(id_user, f_user, i_user, o_user, email_user, login_user)
         self.fill_data_users()
 
         mb.showinfo("Информация", "Пользователь изменен")
 
         self.clear_all()
-
-
-
-
-
 
 
 
@@ -587,8 +584,8 @@ class Ui_MainWindow(object):
         self.users_data_from_bd.itemSelectionChanged.connect(self.users_data_from_bd_click)
 
         bd_get = Bd_get_data()
-        print()
-        print(self.user_prelogin_info_label.text())
+        # print()
+        # print(self.user_prelogin_info_label.text())
         if self.user_prelogin_info_label.text() == "Администратор:":
             polz = bd_get.get_polz_view()
         else:
@@ -804,7 +801,7 @@ class Ui_MainWindow(object):
                 mb.showerror("Ошибка", "Не все данные заполнены!")
                 return
 
-            print(bd_edit.edit_po(int(self.id_po), name_po, int(self.count_keys), vers_po))
+            bd_edit.edit_po(int(self.id_po), name_po, int(self.count_keys), vers_po)
             self.fill_data_po()
             self.clear_all()
 
@@ -840,6 +837,8 @@ class Ui_MainWindow(object):
             self.zayavki_data_from_bd.setSelectionBehavior(QAbstractItemView.SelectRows)
             self.zayavki_data_from_bd.setSelectionMode(QAbstractItemView.SingleSelection)
             self.zayavki_data_from_bd.itemSelectionChanged.connect(self.po_zayavki_data_from_bd_click)
+            self.delete_zayavka_button.setText("Мои ключи")
+
 
             bd_get = Bd_get_data()
             po = bd_get.get_po_zayavki_view()
@@ -875,7 +874,32 @@ class Ui_MainWindow(object):
                 self.zayavki_data_from_bd.setItem(rows, 5, QTableWidgetItem(p[5]))
                 self.zayavki_data_from_bd.setItem(rows, 6, QTableWidgetItem(p[6]))
                 
+    def fill_data_self_keys(self):
+        
+        if self.flag_po_zayavki != "po_zayavki":
+        
+            self.zayavki_data_from_bd.clear()
+            self.zayavki_data_from_bd.setRowCount(0) 
+            self.zayavki_data_from_bd.setColumnCount(4)
+            self.zayavki_data_from_bd.setHorizontalHeaderLabels(["Номер ПО", "Название ПО", "Версия ПО", "Ключ"])
+            
+            self.zayavki_data_from_bd.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+            self.zayavki_data_from_bd.setSelectionBehavior(QAbstractItemView.SelectRows)
+            self.zayavki_data_from_bd.setSelectionMode(QAbstractItemView.SingleSelection)
+            self.zayavki_data_from_bd.itemSelectionChanged.connect(self.po_zayavki_data_from_bd_click)
 
+            bd_get = Bd_get_data()
+            po = bd_get.get_self_keys_view(self.user_login_info.text())
+            # print(po)
+            for p in po:
+                rows = self.zayavki_data_from_bd.rowCount()
+                self.zayavki_data_from_bd.setRowCount(rows + 1)
+                self.zayavki_data_from_bd.setItem(rows, 0, QTableWidgetItem(str(p[0])))
+                self.zayavki_data_from_bd.setItem(rows, 1, QTableWidgetItem(p[1]))
+                self.zayavki_data_from_bd.setItem(rows, 2, QTableWidgetItem(p[3]))
+                self.zayavki_data_from_bd.setItem(rows, 3, QTableWidgetItem(p[8]))
+
+            self.delete_zayavka_button.setText("Назад")
 
 # Получение данных при клике
     def po_zayavki_data_from_bd_click(self):
@@ -911,7 +935,7 @@ class Ui_MainWindow(object):
                 mb.showerror("Ошибка", "Нажмите на ПО")
                 return
 
-            print(bd_add.add_zayavka("В работе", id_po, id_user))
+            bd_add.add_zayavka("В работе", id_po, id_user)
             mb.showinfo("Информация", "Ваша заявка отправлена")
             
             self.clear_all()
@@ -985,6 +1009,9 @@ class Ui_MainWindow(object):
         
 # Отправка сообщений
     def send_key_to_user(self, key, user_mail):
+
+        # print(user_mail)
+        # print(key)
         
         send_mail = Send_email()
         send_mail.send("ychet.po", "swfi ciqc lani rhvm" , user_mail, send_mail.kluchHtml(key))
@@ -1033,15 +1060,30 @@ class Ui_MainWindow(object):
 # Создание отчета
     def create_report(self):
 
-        get_data = Bd_get_data()
-        data = get_data.get_statistic()
+        if self.flag_po_zayavki == "po_zayavki":
 
-        doc = ImportDoc()
-        for item in data:
-            fio = f'{item[3]} {item[4]} {item[5]}'
-            po = f'{item[0]} {item[1]} {item[6]} {item[7]}'
-            doc.importDoc(fio, po)
-        doc.saveDoc()
+            # if self.statistic:
+            get_data = Bd_get_data()
+            data = get_data.get_statistic()
+            # else:
+            #     data = self.statistic
+
+            doc = ImportDoc()
+            for item in data:
+                fio = f'{item[3]} {item[4]} {item[5]}'
+                po = f'{item[0]} {item[1]} {item[6]} {item[7]}'
+                doc.importDoc(fio, po)
+            doc.saveDoc()
+
+            mb.showinfo("Info", "Отчет сохранен на ваш рабочий стол")
+
+        else:
+            if self.delete_zayavka_button.text() == "Мои ключи":
+                self.fill_data_self_keys()
+            else:
+                self.fill_data_po_zayavki()
+
+
 
 
 if __name__ == "__main__":
